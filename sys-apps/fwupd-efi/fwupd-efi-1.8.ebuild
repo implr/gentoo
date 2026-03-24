@@ -1,4 +1,4 @@
-# Copyright 2021-2025 Gentoo Authors
+# Copyright 2021-2026 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -62,4 +62,15 @@ src_configure() {
 src_install() {
 	meson_src_install
 	secureboot_auto_sign
+}
+
+pkg_postinst() {
+	if use secureboot; then
+		elog "By default fwupd uses shim to secureboot updater images."
+		elog "If you're using your own keys, configure fwupd to ignore shim by adding"
+		elog "  [uefi_capsule]"
+		elog "  DisableShimForSecureBoot=true"
+		elog "to /etc/fwupd/fwupd.conf."
+		elog "Otherwise fwupd will fail trying to find the shim binary."
+	fi
 }
